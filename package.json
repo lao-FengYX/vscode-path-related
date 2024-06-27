@@ -3,21 +3,72 @@
   "displayName": "path-related",
   "description": "路径提示",
   "version": "0.0.1",
+  "author": "Lao Feng",
+  "publisher": "LaoFeng",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": {
+    "email": "laofyx@163.com",
+    "url": "/issues"
+  },
   "engines": {
     "vscode": "^1.75.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "keywords": [
+    "path",
+    "path-related",
+    "path-support",
+    "path-completion",
+    "path-suggest",
+    "path-completion",
+    "path-suggestion",
+    "path-jump",
+    "path-alias"
+  ],
+  "activationEvents": [
+    "*"
+  ],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "path-related.helloWorld",
-        "title": "Hello World"
+    "commands": [],
+    "configuration": {
+      "title": "path-related",
+      "properties": {
+        "path-related.pathAlias": {
+          "type": "object",
+          "description": "路径别名",
+          "default": {
+            "@": "${workspaceFolder}/src"
+          }
+        },
+        "path-related.ignoreHiddenFiles": {
+          "type": "boolean",
+          "description": "忽略隐藏文件",
+          "default": true
+        },
+        "path-related.ignoreFileExt": {
+          "type": "array",
+          "description": "忽略文件后缀",
+          "default": [
+            ".js",
+            ".ts",
+            ".tsx",
+            ".jsx",
+            ".d.ts"
+          ]
+        },
+        "path-related.autoNextSuggest": {
+          "type": "boolean",
+          "description": "自动提示下一个建议",
+          "default": false
+        }
       }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
