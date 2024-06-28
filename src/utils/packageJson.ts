@@ -1,6 +1,6 @@
 import { execSync } from 'child_process'
 import { dirname, join } from 'path'
-import { readFileSync } from 'fs'
+import { readFileSync, existsSync } from 'fs'
 import * as repl from 'repl'
 
 import { getActiveEditor } from '.'
@@ -20,8 +20,23 @@ const getGitAbsolutePath = () => {
   return gitRoot
 }
 
-const getPackageJson = (): [Record<string, any>, string] | undefined => {
-  const rootPath = getGitAbsolutePath()
+const getPackageJsonPath = (filePath: string, folderPath: string) => {
+  // 循环获取package.json
+  let currentPath = dirname(filePath)
+  while (currentPath.length >= folderPath.length) {
+    const packageJsonPath = join(currentPath, 'package.json')
+    if (existsSync(packageJsonPath)) {
+      return currentPath
+    }
+    currentPath = dirname(currentPath)
+  }
+}
+
+const getPackageJson = (
+  filePath: string,
+  folderPath: string
+): [Record<string, any>, string] | undefined => {
+  const rootPath = getPackageJsonPath(filePath, folderPath)
   if (!rootPath) return
   const packageJsonPath = join(rootPath, 'package.json')
   try {
@@ -31,10 +46,13 @@ const getPackageJson = (): [Record<string, any>, string] | undefined => {
   }
 }
 
-export const getPkgDependencies = (): [string[] | undefined, string | undefined] => {
+export const getPkgDependencies = (
+  filePath: string,
+  folderPath: string
+): [string[] | undefined, string | undefined] => {
   const depend: string[] = []
   const keys = ['dependencies', 'devDependencies']
-  const result = getPackageJson()
+  const result = getPackageJson(filePath, folderPath)
   if (!result) return [undefined, undefined]
 
   const [packageJson, rootPath] = result

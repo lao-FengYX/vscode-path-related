@@ -1,7 +1,7 @@
 import { join } from 'path'
 import { TextEditor, Uri, workspace } from 'vscode'
 
-import { debounce, delay, getActiveEditor, Flag } from '.'
+import { getActiveEditor, Flag } from '.'
 import { Logger } from './logger'
 import { config } from './register'
 import { getPkgDependencies } from './packageJson'
@@ -114,7 +114,7 @@ const getPathFlag = (
   }
 
   // 依赖包路径
-  const [dependencies, rootPath] = getPkgDependencies()
+  const [dependencies, rootPath] = getPkgDependencies(filePath, folderPath)
   if (
     dependencies &&
     rootPath &&
@@ -161,7 +161,7 @@ const getNewPath = (currentP: string, folderP: string, fileP: string) => {
 }
 
 const captureReg = /\'(.*?)\'|\"(.*?)\"|`(.*?)`|\(.*?\)/
-const handlePath = async (text: string) => {
+export const handlePath = async (text: string) => {
   const editor = getActiveEditor()
   if (!editor) return
 
@@ -191,5 +191,3 @@ const handlePath = async (text: string) => {
     Logger.info(`路径未找到 path -> ${newPath}`)
   }
 }
-
-export const debounceHandlePath = debounce(handlePath, delay)

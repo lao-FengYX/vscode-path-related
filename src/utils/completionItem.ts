@@ -7,8 +7,7 @@ import {
   TextDocument
 } from 'vscode'
 
-import { debounce, delay } from '.'
-import { debounceHandlePath } from './folder'
+import { handlePath } from './folder'
 import { config } from './register'
 
 const sortText = {
@@ -17,9 +16,19 @@ const sortText = {
   [FileType.SymbolicLink]: 3,
   [FileType.Unknown]: 4
 }
+
+const shouldProvide = (currentText: string, position: Position) => {
+  if (currentText.at(position.character - 1) === '/') {
+    return true
+  }
+  return false
+}
+
 const provideCompletionItems = async (document: TextDocument, position: Position) => {
   const fullText = document.lineAt(position).text
-  const fileList = await debounceHandlePath(fullText)
+  if (!shouldProvide(fullText, position)) return
+
+  const fileList = await handlePath(fullText)
   if (!fileList) return
 
   const arr: CompletionItem[] = []
@@ -70,8 +79,6 @@ const provideCompletionItems = async (document: TextDocument, position: Position
   return new CompletionList(arr, false)
 }
 
-const debounceProvider = debounce(provideCompletionItems, delay)
-
 export default {
-  provideCompletionItems: debounceProvider
+  provideCompletionItems
 }
