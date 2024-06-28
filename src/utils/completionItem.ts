@@ -4,8 +4,7 @@ import {
   CompletionList,
   FileType,
   Position,
-  TextDocument,
-  window
+  TextDocument
 } from 'vscode'
 
 import { debounce, delay } from '.'

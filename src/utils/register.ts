@@ -1,9 +1,8 @@
 import { ExtensionContext, commands, languages, window, workspace } from 'vscode'
 
-import { getActiveEditor, getConfig } from '.'
+import { getConfig } from '.'
 import type { ConfigReturnType } from '../typing'
 import autoCompletion from './completionItem'
-import { debounceHandlePath } from './folder'
 
 const config: ConfigReturnType = {
   ignoreHiddenFiles: undefined,
@@ -30,7 +29,9 @@ const handleRegister = (context: ExtensionContext) => {
   )
 
   // 提供的完成项
-  context.subscriptions.push(languages.registerCompletionItemProvider('*', autoCompletion, '/'))
+  context.subscriptions.push(
+    languages.registerCompletionItemProvider('*', autoCompletion, ...["'", '"', '/'])
+  )
 }
 
 export { config, handleRegister }

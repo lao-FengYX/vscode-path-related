@@ -43,4 +43,15 @@ export const getConfig = <T extends keyof ConfigReturnType>(
 /**
  * 延迟时间
  */
-export const delay = 500
+export const delay = 300
+
+export const enum Flag {
+  /** 绝对路径 */
+  absolute = 1,
+  /** 相对路径 */
+  relative = 2,
+  /** 自定义路径 */
+  custom = 3,
+  /** npm 包路径 */
+  npmPkg = 4
+}
