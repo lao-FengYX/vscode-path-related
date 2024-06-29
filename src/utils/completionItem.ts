@@ -53,15 +53,15 @@ const provideCompletionItems = async (document: TextDocument, position: Position
     snippet.insertText = name
 
     if (type === FileType.File) {
+      const copyIgnoreFileExt = [...config.ignoreFileExt]
+
       // 如果在忽略的文件后缀中, 截取文件名
-      config.ignoreFileExt
-        .sort((a, b) => b.length - a.length)
-        .some(ext => {
-          if (name.endsWith(ext)) {
-            snippet.insertText = name.slice(0, -ext.length)
-            return true
-          }
-        })
+      copyIgnoreFileExt.sort().some(ext => {
+        if (name.endsWith(ext)) {
+          snippet.insertText = name.slice(0, -ext.length)
+          return true
+        }
+      })
     } else if (type === FileType.Directory) {
       if (config.autoNextSuggest) {
         snippet.insertText = `${name}/`

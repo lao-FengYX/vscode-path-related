@@ -9,11 +9,11 @@ import { getPkgDependencies } from './packageJson'
 /**
  * 绝对路径
  */
-const absolutePath = ['/']
+export const absolutePath = ['/']
 /**
  * 相对路径
  */
-const relativePath = ['./', '../']
+export const relativePath = ['./', '../']
 
 export const getFolderPath = (editor: TextEditor) => {
   const workspaceFolder = workspace.getWorkspaceFolder(editor.document.uri)
@@ -70,12 +70,14 @@ const getPkgPath = (currentPath: string, rootPath: string) => {
  * @param currentPath 当前键入路径
  * @param folderPath 工作区路径
  * @param filePath 当前文件路径
+ * @param verify 是否校验结尾路径
  * @returns
  */
 const getPathFlag = async (
   currentPath: string,
   folderPath: string,
-  filePath: string
+  filePath: string,
+  verify: Boolean
 ): Promise<
   | [
       Flag,
@@ -91,12 +93,16 @@ const getPathFlag = async (
   | []
 > => {
   // 绝对路径
-  if (absolutePath.some(p => currentPath.startsWith(p) && currentPath.endsWith('/'))) {
+  if (
+    absolutePath.some(p => currentPath.startsWith(p) && (verify ? currentPath.endsWith('/') : true))
+  ) {
     return [Flag.absolute, { currentPath, folderPath, filePath }]
   }
 
   // 相对路径
-  if (relativePath.some(p => currentPath.startsWith(p) && currentPath.endsWith('/'))) {
+  if (
+    relativePath.some(p => currentPath.startsWith(p) && (verify ? currentPath.endsWith('/') : true))
+  ) {
     return [Flag.relative, { currentPath, folderPath, filePath }]
   }
 
@@ -108,8 +114,9 @@ const getPathFlag = async (
     }
   )
   const [alias, aliasPath] =
-    processedPathAlias.find(([key]) => currentPath.startsWith(key) && currentPath.endsWith('/')) ||
-    []
+    processedPathAlias.find(
+      ([key]) => currentPath.startsWith(key) && (verify ? currentPath.endsWith('/') : true)
+    ) || []
   if (alias && aliasPath) {
     return [Flag.custom, { currentPath, folderPath, filePath, alias, aliasPath }]
   }
@@ -120,7 +127,7 @@ const getPathFlag = async (
     // 获取所有依赖的 key 和依赖的 pkgJson 路径
     const [dependencies, rootPath] =
       allPkgResult.find(([keys]) =>
-        keys.some(p => currentPath.startsWith(p) && currentPath.endsWith('/'))
+        keys.some(p => currentPath.startsWith(p) && (verify ? currentPath.endsWith('/') : true))
       ) || []
 
     if (dependencies && rootPath) {
@@ -136,10 +143,16 @@ const getPathFlag = async (
  * @param currentP 当前键入路径
  * @param folderP 工作区路径
  * @param fileP 当前文件路径
+ * @param verify 是否校验结尾路径
  * @returns
  */
-const getNewPath = async (currentP: string, folderP: string, fileP: string) => {
-  const [flag, argObj] = await getPathFlag(currentP, folderP, fileP)
+export const getNewPath = async (
+  currentP: string,
+  folderP: string,
+  fileP: string,
+  verify = true
+) => {
+  const [flag, argObj] = await getPathFlag(currentP, folderP, fileP, verify)
   if (!argObj) return
 
   const { currentPath, folderPath, filePath, aliasPath = '', alias = '', rootPath = '' } = argObj
@@ -165,7 +178,7 @@ const getNewPath = async (currentP: string, folderP: string, fileP: string) => {
   return result
 }
 
-const captureReg = /\'(.*?)\'|\"(.*?)\"|`(.*?)`|\(.*?\)/
+export const captureReg = /\'(.*?)\'|\"(.*?)\"|`(.*?)`|\(.*?\)/
 export const handlePath = async (text: string) => {
   const editor = getActiveEditor()
   if (!editor) return

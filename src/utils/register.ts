@@ -3,6 +3,7 @@ import { ExtensionContext, languages, workspace } from 'vscode'
 import { getConfig } from '.'
 import type { ConfigReturnType } from '../typing'
 import autoCompletion from './completionItem'
+import jumpToFileProvider from './provideDefinition'
 
 const config: ConfigReturnType = {
   ignoreHiddenFiles: undefined,
@@ -28,10 +29,13 @@ const handleRegister = (context: ExtensionContext) => {
     })
   )
 
-  // 提供的完成项
+  // 提供的路径完成项
   context.subscriptions.push(
     languages.registerCompletionItemProvider('*', autoCompletion, ...["'", '"', '/'])
   )
+
+  // 提供跳转的完成项
+  context.subscriptions.push(languages.registerDefinitionProvider('*', jumpToFileProvider))
 }
 
 export { config, handleRegister }
