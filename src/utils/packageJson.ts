@@ -1,5 +1,5 @@
 import { execSync } from 'child_process'
-import { dirname, join } from 'path'
+import { dirname, join, sep } from 'path'
 import { readFileSync, existsSync } from 'fs'
 import * as repl from 'repl'
 
@@ -21,14 +21,16 @@ const getGitAbsolutePath = () => {
 }
 
 const getPackageJsonPath = (filePath: string, folderPath: string) => {
+  const arr = filePath.replace(folderPath, '').split(sep).filter(Boolean)
+
   // 循环获取package.json
-  let currentPath = dirname(filePath)
-  while (currentPath.length >= folderPath.length) {
+  let currentPath = folderPath
+  while (currentPath !== filePath && arr.length) {
     const packageJsonPath = join(currentPath, 'package.json')
     if (existsSync(packageJsonPath)) {
       return currentPath
     }
-    currentPath = dirname(currentPath)
+    currentPath += sep + arr.shift()
   }
 }
 
