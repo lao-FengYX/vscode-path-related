@@ -62,6 +62,8 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
 
   return [
     {
+      // 下划线展示的范围不对
+      // 可能只需要做 别名跳转
       originSelectionRange: new Range(
         position.line,
         index,
