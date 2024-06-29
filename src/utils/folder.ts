@@ -114,13 +114,17 @@ const getPathFlag = (
   }
 
   // 依赖包路径
-  const [dependencies, rootPath] = getPkgDependencies(filePath, folderPath)
-  if (
-    dependencies &&
-    rootPath &&
-    dependencies.some(p => currentPath.startsWith(p) && currentPath.endsWith('/'))
-  ) {
-    return [Flag.npmPkg, { currentPath, folderPath, filePath, rootPath }]
+  const allPkgResult = getPkgDependencies(filePath, folderPath)
+  if (allPkgResult) {
+    // 获取所有依赖的 key 和依赖的 pkgJson 路径
+    const [dependencies, rootPath] =
+      allPkgResult.find(([keys]) =>
+        keys.some(p => currentPath.startsWith(p) && currentPath.endsWith('/'))
+      ) || []
+
+    if (dependencies && rootPath) {
+      return [Flag.npmPkg, { currentPath, folderPath, filePath, rootPath }]
+    }
   }
 
   return []
