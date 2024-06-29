@@ -72,11 +72,11 @@ const getPkgPath = (currentPath: string, rootPath: string) => {
  * @param filePath 当前文件路径
  * @returns
  */
-const getPathFlag = (
+const getPathFlag = async (
   currentPath: string,
   folderPath: string,
   filePath: string
-):
+): Promise<
   | [
       Flag,
       {
@@ -88,7 +88,8 @@ const getPathFlag = (
         rootPath?: string
       }
     ]
-  | [] => {
+  | []
+> => {
   // 绝对路径
   if (absolutePath.some(p => currentPath.startsWith(p) && currentPath.endsWith('/'))) {
     return [Flag.absolute, { currentPath, folderPath, filePath }]
@@ -114,7 +115,7 @@ const getPathFlag = (
   }
 
   // 依赖包路径
-  const allPkgResult = getPkgDependencies(filePath, folderPath)
+  const allPkgResult = await getPkgDependencies()
   if (allPkgResult) {
     // 获取所有依赖的 key 和依赖的 pkgJson 路径
     const [dependencies, rootPath] =
@@ -137,8 +138,8 @@ const getPathFlag = (
  * @param fileP 当前文件路径
  * @returns
  */
-const getNewPath = (currentP: string, folderP: string, fileP: string) => {
-  const [flag, argObj] = getPathFlag(currentP, folderP, fileP)
+const getNewPath = async (currentP: string, folderP: string, fileP: string) => {
+  const [flag, argObj] = await getPathFlag(currentP, folderP, fileP)
   if (!argObj) return
 
   const { currentPath, folderPath, filePath, aliasPath = '', alias = '', rootPath = '' } = argObj
@@ -181,7 +182,7 @@ export const handlePath = async (text: string) => {
   const currentPath = mathArr[0].replace(/[\'\"\`\(\)]/g, '')
   if (!currentPath.trim()) return
 
-  let newPath: string | undefined = getNewPath(currentPath, folderPath, filePath)
+  let newPath: string | undefined = await getNewPath(currentPath, folderPath, filePath)
 
   if (!newPath) return
 

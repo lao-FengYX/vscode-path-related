@@ -1,4 +1,4 @@
-import { ExtensionContext, commands, languages, window, workspace } from 'vscode'
+import { ExtensionContext, languages, workspace } from 'vscode'
 
 import { getConfig } from '.'
 import type { ConfigReturnType } from '../typing'

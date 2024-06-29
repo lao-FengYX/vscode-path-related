@@ -1,7 +1,7 @@
 import { execSync } from 'child_process'
-import { existsSync, readFileSync } from 'fs'
-import { dirname, join, sep } from 'path'
+import { dirname } from 'path'
 import * as repl from 'repl'
+import { Uri, workspace } from 'vscode'
 
 import { getActiveEditor } from '.'
 import { Logger } from './logger'
@@ -21,30 +21,14 @@ const getGitAbsolutePath = () => {
   return gitRoot
 }
 
-const getPackageJsonPath = (filePath: string, folderPath: string) => {
-  let pathArr = filePath.replace(folderPath, '').split(sep).filter(Boolean)
-  const index = pathArr.findIndex(item => item === 'src')
-  pathArr = index === -1 ? pathArr : pathArr.slice(0, index + 1)
-
-  let resArr: string[] = []
-  // 循环获取所有的package.json
-  let currentPath = folderPath
-  while (currentPath !== filePath && pathArr.length) {
-    const packageJsonPath = join(currentPath, 'package.json')
-    if (existsSync(packageJsonPath)) {
-      resArr.push(packageJsonPath)
-    }
-    currentPath += sep + pathArr.shift()
-  }
-
-  return resArr
+// 获取所有的package.json
+const getPackageJsonPath = async () => {
+  const files = await workspace.findFiles('**/package.json', '**/node_modules/**')
+  return files.map(file => file.fsPath) || []
 }
 
-const getPackageJson = (
-  filePath: string,
-  folderPath: string
-): [Record<string, any>, string][] | undefined => {
-  const allPkgPath = getPackageJsonPath(filePath, folderPath)
+const getPackageJson = async (): Promise<[Record<string, any>, string][] | undefined> => {
+  const allPkgPath = await getPackageJsonPath()
   if (!allPkgPath.length) return
 
   const arr: [Record<string, any>, string][] = []
@@ -52,7 +36,7 @@ const getPackageJson = (
   for (const path of allPkgPath) {
     let json: Record<string, any> = {}
     try {
-      const pkgJson = readFileSync(path, { encoding: 'utf-8' }) || '{}'
+      const pkgJson = (await workspace.fs.readFile(Uri.file(path))).toString() || '{}'
       json = JSON.parse(pkgJson) || {}
     } catch (error) {
       Logger.info(`读取 package.json 失败, ${error}`)
@@ -63,19 +47,16 @@ const getPackageJson = (
   return arr
 }
 
-export const getPkgDependencies = (
-  filePath: string,
-  folderPath: string
-): [string[], string][] | undefined => {
+export const getPkgDependencies = async (): Promise<[string[], string][] | undefined> => {
   const resArr: [string[], string][] = []
   const keys = ['dependencies', 'devDependencies']
-  const result = getPackageJson(filePath, folderPath)
+  const result = await getPackageJson()
   if (!result) return
 
   for (const [packageJson, rootPath] of result) {
     const depend: string[] = []
     for (const k of keys) {
-      depend.push(...Object.keys(packageJson[k]))
+      depend.push(...Object.keys(packageJson[k] || {}))
     }
     resArr.push([depend, rootPath])
   }

@@ -3,6 +3,7 @@ import { execSync } from 'child_process'
 // import { EOL } from 'os'
 // 分隔符
 // import { sep } from 'path'
+
 import { Logger } from './logger'
 import type { GlobalDirective } from '../typing'
 
