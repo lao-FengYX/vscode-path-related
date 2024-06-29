@@ -1,0 +1,6 @@
+{
+  "pathAlias": "路径别名",
+  "ignoreHiddenFiles": "忽略隐藏文件",
+  "ignoreFileExt": "忽略文件后缀",
+  "autoNextSuggest": "自动提示下一个建议"
+}

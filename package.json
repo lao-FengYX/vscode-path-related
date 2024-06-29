@@ -11,7 +11,7 @@
   },
   "bugs": {
     "email": "laofyx@163.com",
-    "url": "/issues"
+    "url": ""
   },
   "engines": {
     "vscode": "^1.75.0"
@@ -28,7 +28,8 @@
     "path-completion",
     "path-suggestion",
     "path-jump",
-    "path-alias"
+    "path-alias",
+    "path-alias-jump"
   ],
   "activationEvents": [
     "*"
@@ -41,19 +42,19 @@
       "properties": {
         "path-related.pathAlias": {
           "type": "object",
-          "description": "路径别名",
+          "description": "%pathAlias%",
           "default": {
             "@": "${workspaceFolder}/src"
           }
         },
         "path-related.ignoreHiddenFiles": {
           "type": "boolean",
-          "description": "忽略隐藏文件",
+          "description": "%ignoreHiddenFiles%",
           "default": true
         },
         "path-related.ignoreFileExt": {
           "type": "array",
-          "description": "忽略文件后缀",
+          "description": "%ignoreFileExt%",
           "default": [
             ".js",
             ".ts",
@@ -64,7 +65,7 @@
         },
         "path-related.autoNextSuggest": {
           "type": "boolean",
-          "description": "自动提示下一个建议",
+          "description": "%autoNextSuggest%",
           "default": false
         }
       }
