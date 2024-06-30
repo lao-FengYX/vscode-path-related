@@ -1,4 +1,4 @@
-import { ExtensionContext, languages, workspace } from 'vscode'
+import { DocumentSelector, ExtensionContext, languages, workspace } from 'vscode'
 
 import { getConfig } from '.'
 import type { ConfigReturnType } from '../typing'
@@ -18,6 +18,10 @@ config.ignoreFileExt = getConfig('ignoreFileExt') || []
 config.autoNextSuggest = getConfig('autoNextSuggest')
 config.jumpRecognition = getConfig('jumpRecognition') || 'Alias Path'
 
+/**
+ * 语言正则匹配
+ */
+const selector: DocumentSelector = [{ pattern: '**' }]
 const handleRegister = (context: ExtensionContext) => {
   // 配置变化
   context.subscriptions.push(
@@ -34,11 +38,11 @@ const handleRegister = (context: ExtensionContext) => {
 
   // 提供的路径完成项
   context.subscriptions.push(
-    languages.registerCompletionItemProvider('*', autoCompletion, ...["'", '"', '/'])
+    languages.registerCompletionItemProvider(selector, autoCompletion, ...["'", '"', '/'])
   )
 
   // 提供跳转的完成项
-  context.subscriptions.push(languages.registerDefinitionProvider('*', jumpToFileProvider))
+  context.subscriptions.push(languages.registerDefinitionProvider(selector, jumpToFileProvider))
 }
 
 export { config, handleRegister }

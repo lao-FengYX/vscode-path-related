@@ -23,6 +23,13 @@ export const tryExistsPath = async (filePath: string): Promise<string | undefine
     return filePath
   }
 
+  // 如果当前路径没有后缀并且不存在
+  if (!extname(filePath) && !existsSync(filePath)) {
+    const possibleFileArr = config.ignoreFileExt.map(ext => `${filePath}${ext}`)
+    const find = possibleFileArr.find(file => existsSync(file))
+    if (find) return find
+  }
+
   // 如果当前路径为文件夹，则尝试添加 index 和忽略的后缀名
   if (!extname(filePath) && (await isDir(filePath))) {
     const copyIgnoreFileExt = [...config.ignoreFileExt]
@@ -30,13 +37,6 @@ export const tryExistsPath = async (filePath: string): Promise<string | undefine
     const possibleFileArr = copyIgnoreFileExt.sort().map(ext => `${filePath}${sep}index${ext}`)
 
     return possibleFileArr.find(file => existsSync(file))
-  }
-
-  // 如果当前路径没有后缀并且不存在
-  if (!extname(filePath) && !existsSync(filePath)) {
-    const possibleFileArr = config.ignoreFileExt.map(ext => `${filePath}${ext}`)
-    const find = possibleFileArr.find(file => existsSync(file))
-    if (find) return find
   }
 
   // 当前使用的可能是 pnpm 的路径(软连接)
@@ -48,14 +48,17 @@ export const tryExistsPath = async (filePath: string): Promise<string | undefine
   }
 }
 
+/**
+ * 拿到符号的偏移位置
+ * @param str 判断的字符
+ * @returns 基于原字符的偏移位置
+ */
 export const startAndEndSymbol = (str: string) => {
-  if (str.at(0) === "'" && str.at(-1) === "'") {
-    return true
+  const reg = /^\([^'"].+[^'"]\)$/
+  if (reg.test(str)) {
+    return 0
   }
-  if (str.at(0) === '"' && str.at(-1) === '"') {
-    return true
-  }
-  return false
+  return 1
 }
 
 const captureReg = /['"`\(].+['"`\)]/
@@ -85,40 +88,43 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
 
   // 识别别名和 node_modules
   if (config.jumpRecognition === 'Alias Path And node_modules') {
-    const res1 = !Object.keys(config.pathAlias || {}).some(alias =>
+    const res1 = Object.keys(config.pathAlias || {}).some(alias =>
       captureText.startsWith(alias + '/')
     )
     const deps = await getPkgDependencies()
-    const res2 = deps?.find(([dep]) => dep.some(pkg => captureText.startsWith(pkg + '/')))
+    const res2 = deps?.find(([dep]) => dep.some(pkg => captureText.startsWith(pkg)))
 
     // 别名和 node_modules 都不存在
-    if (res1 && !res2) return
+    if (!res1 && !res2) return
   }
 
   const newPath = await getNewPath(captureText, folderPath, document.fileName, false)
   if (!newPath) return
 
   const existsPath = await tryExistsPath(newPath)
+  if (!existsPath) return
 
   if (config.jumpRecognition === 'All Path') {
     return [
       {
-        uri: Uri.file(existsPath || newPath),
+        uri: Uri.file(existsPath),
         range: new Range(0, 0, 0, 0)
       }
     ]
   }
 
+  const start = startAndEndSymbol(str)
+
   return [
     {
       originSelectionRange: new Range(
         position.line,
-        startAndEndSymbol(str) ? index - 1 : index,
+        index - start,
         position.line,
-        startAndEndSymbol(str) ? index + captureText.length + 1 : index + captureText.length
+        index + captureText.length + start
       ),
       targetRange: new Range(0, 0, 0, 0),
-      targetUri: Uri.file(existsPath || newPath)
+      targetUri: Uri.file(existsPath)
     }
   ]
 }
