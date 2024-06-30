@@ -64,11 +64,20 @@ const provideCompletionItems = async (document: TextDocument, position: Position
       })
     } else if (type === FileType.Directory) {
       if (config.autoNextSuggest) {
-        snippet.insertText = `${name}/`
+        // 查看 path-autocomplete 插件的代码，发现的
+        // 模拟用户键入 /
+        // 比 vscode 命令 editor.action.triggerSuggest 更加好用
         snippet.command = {
-          command: 'editor.action.triggerSuggest', // 内置命令，用于触发自动完成
-          title: 'Trigger suggest' // 命令的描述（可选）
+          command: 'default:type',
+          title: 'Trigger Suggest',
+          arguments: [
+            {
+              text: '/'
+            }
+          ]
         }
+
+        snippet.label += '/'
       }
     }
 

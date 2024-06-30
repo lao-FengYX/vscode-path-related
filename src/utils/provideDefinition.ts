@@ -1,4 +1,4 @@
-import { DefinitionProvider, FileType, Range, Uri, workspace } from 'vscode'
+import { DefinitionProvider, FileType, Position, Range, Uri, workspace } from 'vscode'
 import { existsSync, readlinkSync } from 'fs'
 import { extname, sep } from 'path'
 
@@ -61,6 +61,19 @@ export const startAndEndSymbol = (str: string) => {
   return 1
 }
 
+/**
+ * 验证鼠标位置是否在需要解析的路径中
+ */
+export const textInThePath = (
+  position: Position,
+  text: string,
+  captureText: string
+): [boolean, number] => {
+  const index = text.lastIndexOf(captureText)
+  const boo = position.character > index && position.character < index + captureText.length
+  return [boo, index]
+}
+
 const captureReg = /['"`\(].+['"`\)]/
 const provideDefinition: DefinitionProvider['provideDefinition'] = async (document, position) => {
   const editor = getActiveEditor()
@@ -76,7 +89,6 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
   const str = matchArr[0]
   const captureText = str.replace(/[\'\"\`\(\)]/g, '')
   if (!captureText) return
-  const index = lineText.lastIndexOf(captureText)
 
   // 如果只识别别名
   if (
@@ -104,25 +116,21 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
   const existsPath = await tryExistsPath(newPath)
   if (!existsPath) return
 
-  if (config.jumpRecognition === 'All Path') {
-    return [
-      {
-        uri: Uri.file(existsPath),
-        range: new Range(0, 0, 0, 0)
-      }
-    ]
-  }
-
+  const [boo, index] = textInThePath(position, lineText, captureText)
   const start = startAndEndSymbol(str)
+  if (!boo) return
 
   return [
     {
-      originSelectionRange: new Range(
-        position.line,
-        index - start,
-        position.line,
-        index + captureText.length + start
-      ),
+      originSelectionRange:
+        index > -1
+          ? new Range(
+              position.line,
+              index - start,
+              position.line,
+              index + captureText.length + start
+            )
+          : undefined,
       targetRange: new Range(0, 0, 0, 0),
       targetUri: Uri.file(existsPath)
     }
