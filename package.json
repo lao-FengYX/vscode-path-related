@@ -67,6 +67,21 @@
           "type": "boolean",
           "description": "%autoNextSuggest%",
           "default": false
+        },
+        "path-related.jumpRecognition": {
+          "type": "string",
+          "enum": [
+            "Alias Path",
+            "Alias Path And node_modules",
+            "All Path"
+          ],
+          "default": "Alias Path",
+          "description": "%jumpRecognition%",
+          "enumDescriptions": [
+            "%jumpRecognition.AliasPath%",
+            "%jumpRecognition.AliasPathAndNodeModules%",
+            "%jumpRecognition.AllPath%"
+          ]
         }
       }
     }

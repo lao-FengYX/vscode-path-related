@@ -2,5 +2,9 @@
   "pathAlias": "Path Alias",
   "ignoreHiddenFiles": "Ignore Hidden Files",
   "ignoreFileExt": "Ignore File Extension List",
-  "autoNextSuggest": "Auto Suggest Next Item"
+  "autoNextSuggest": "Auto Suggest Next Item",
+  "jumpRecognition": "Identify path rules",
+  "jumpRecognition.AliasPath": "Only recognize the provided alias",
+  "jumpRecognition.AliasPathAndNodeModules": "Recognize the alias and node_modules",
+  "jumpRecognition.AllPath": "Recognize all paths"
 }

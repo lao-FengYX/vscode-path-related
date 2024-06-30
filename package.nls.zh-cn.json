@@ -2,5 +2,9 @@
   "pathAlias": "路径别名",
   "ignoreHiddenFiles": "忽略隐藏文件",
   "ignoreFileExt": "忽略文件后缀",
-  "autoNextSuggest": "自动提示下一个建议"
+  "autoNextSuggest": "自动提示下一个建议",
+  "jumpRecognition": "识别路径规则",
+  "jumpRecognition.AliasPath": "仅识别提供的别名",
+  "jumpRecognition.AliasPathAndNodeModules": "识别别名和 node_modules",
+  "jumpRecognition.AllPath": "识别所有路径"
 }
