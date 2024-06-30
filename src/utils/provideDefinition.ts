@@ -90,6 +90,10 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
   const captureText = str.replace(/[\'\"\`\(\)]/g, '')
   if (!captureText) return
 
+  const [boo, index] = textInThePath(position, lineText, captureText)
+  const start = startAndEndSymbol(str)
+  if (!boo) return
+
   // 如果只识别别名
   if (
     config.jumpRecognition === 'Alias Path' &&
@@ -115,10 +119,6 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
 
   const existsPath = await tryExistsPath(newPath)
   if (!existsPath) return
-
-  const [boo, index] = textInThePath(position, lineText, captureText)
-  const start = startAndEndSymbol(str)
-  if (!boo) return
 
   return [
     {
