@@ -7,11 +7,11 @@
   "publisher": "LaoFeng",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/lao-FengYX/vscode-path-related"
   },
   "bugs": {
     "email": "laofyx@163.com",
-    "url": ""
+    "url": "https://github.com/lao-FengYX/vscode-path-related/issues"
   },
   "engines": {
     "vscode": "^1.75.0"
@@ -23,7 +23,6 @@
     "path",
     "path-related",
     "path-support",
-    "path-completion",
     "path-suggest",
     "path-completion",
     "path-suggestion",
