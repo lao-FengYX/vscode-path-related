@@ -14,4 +14,5 @@ export interface ConfigReturnType {
   ignoreFileExt: string[]
   autoNextSuggest: Boolean | undefined
   jumpRecognition: 'Alias Path' | 'Alias Path And node_modules' | 'All Path'
+  allowSuffixExtensions: string[]
 }

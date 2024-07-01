@@ -6,5 +6,6 @@
   "jumpRecognition": "识别路径规则",
   "jumpRecognition.AliasPath": "仅识别提供的别名",
   "jumpRecognition.AliasPathAndNodeModules": "识别别名和 node_modules",
-  "jumpRecognition.AllPath": "识别所有路径"
+  "jumpRecognition.AllPath": "识别所有路径",
+  "allowSuffixExtensions": "允许省略的后缀, (默认读取 `ignoreFileExt` 配置)"
 }

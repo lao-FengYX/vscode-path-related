@@ -6,5 +6,6 @@
   "jumpRecognition": "Identify path rules",
   "jumpRecognition.AliasPath": "Only recognize the provided alias",
   "jumpRecognition.AliasPathAndNodeModules": "Recognize the alias and node_modules",
-  "jumpRecognition.AllPath": "Recognize all paths"
+  "jumpRecognition.AllPath": "Recognize all paths",
+  "allowSuffixExtensions": "Allow omitted suffixes (default reading of `ignoreFileExt` configuration)"
 }

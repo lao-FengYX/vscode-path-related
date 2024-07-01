@@ -101,6 +101,7 @@ const getPathFlag = async (
 
   // 相对路径
   if (
+    currentPath === '.' ||
     relativePath.some(p => currentPath.startsWith(p) && (verify ? currentPath.endsWith('/') : true))
   ) {
     return [Flag.relative, { currentPath, folderPath, filePath }]

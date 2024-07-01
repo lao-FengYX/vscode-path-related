@@ -82,6 +82,11 @@
             "%jumpRecognition.AliasPathAndNodeModules%",
             "%jumpRecognition.AllPath%"
           ]
+        },
+        "path-related.allowSuffixExtensions": {
+          "type": "array",
+          "description": "%allowSuffixExtensions%",
+          "default": []
         }
       }
     }

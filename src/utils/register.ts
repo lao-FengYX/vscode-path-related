@@ -10,13 +10,15 @@ const config: ConfigReturnType = {
   pathAlias: undefined,
   ignoreFileExt: [],
   autoNextSuggest: false,
-  jumpRecognition: 'Alias Path'
+  jumpRecognition: 'Alias Path',
+  allowSuffixExtensions: []
 }
 config.ignoreHiddenFiles = getConfig('ignoreHiddenFiles')
 config.pathAlias = getConfig('pathAlias')
 config.ignoreFileExt = getConfig('ignoreFileExt') || []
 config.autoNextSuggest = getConfig('autoNextSuggest')
 config.jumpRecognition = getConfig('jumpRecognition') || 'Alias Path'
+config.allowSuffixExtensions = getConfig('allowSuffixExtensions') || []
 
 /**
  * 语言正则匹配
@@ -32,6 +34,7 @@ const handleRegister = (context: ExtensionContext) => {
         config.ignoreFileExt = getConfig('ignoreFileExt') || []
         config.autoNextSuggest = getConfig('autoNextSuggest')
         config.jumpRecognition = getConfig('jumpRecognition') || 'Alias Path'
+        config.allowSuffixExtensions = getConfig('allowSuffixExtensions') || []
       }
     })
   )

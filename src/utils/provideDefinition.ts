@@ -1,12 +1,21 @@
-import { DefinitionProvider, FileType, Position, Range, Uri, workspace } from 'vscode'
 import { existsSync, readlinkSync } from 'fs'
 import { extname, sep } from 'path'
+import {
+  DefinitionProvider,
+  FileType,
+  Position,
+  Range,
+  ThemeColor,
+  Uri,
+  window,
+  workspace
+} from 'vscode'
 
-import { config } from './register'
 import { getActiveEditor } from '.'
 import { getFolderPath, getNewPath } from './folder'
 import { Logger } from './logger'
 import { getPkgDependencies } from './packageJson'
+import { config } from './register'
 
 export const isDir = async (filePath: string) => {
   const fileStat = await workspace.fs.stat(Uri.file(filePath))
@@ -19,11 +28,12 @@ export const isFile = async (filePath: string) => {
 
 export const tryExistsPath = async (filePath: string): Promise<string | undefined> => {
   // 如果当前路径为文件，则直接返回
-  if (extname(filePath) && (await isFile(filePath))) {
+  if (extname(filePath) && existsSync(filePath) && (await isFile(filePath))) {
     return filePath
   }
 
   // 如果当前路径没有后缀并且不存在
+  // 尝试添加后缀名
   if (!extname(filePath) && !existsSync(filePath)) {
     const possibleFileArr = config.ignoreFileExt.map(ext => `${filePath}${ext}`)
     const find = possibleFileArr.find(file => existsSync(file))
@@ -31,8 +41,8 @@ export const tryExistsPath = async (filePath: string): Promise<string | undefine
   }
 
   // 如果当前路径为文件夹，则尝试添加 index 和忽略的后缀名
-  if (!extname(filePath) && (await isDir(filePath))) {
-    const copyIgnoreFileExt = [...config.ignoreFileExt]
+  if (!extname(filePath) && existsSync(filePath) && (await isDir(filePath))) {
+    const copyIgnoreFileExt = [...config.ignoreFileExt, ...config.allowSuffixExtensions]
 
     const possibleFileArr = copyIgnoreFileExt.sort().map(ext => `${filePath}${sep}index${ext}`)
 
@@ -44,7 +54,7 @@ export const tryExistsPath = async (filePath: string): Promise<string | undefine
     const link = readlinkSync(filePath, { encoding: 'utf-8' })
     return tryExistsPath(link)
   } catch (error) {
-    Logger.info(`路径查找失败, err: ${error}`)
+    Logger.info(`路径查找失败, ${error}`)
   }
 }
 
@@ -70,9 +80,21 @@ export const textInThePath = (
   captureText: string
 ): [boolean, number] => {
   const index = text.lastIndexOf(captureText)
-  const boo = position.character > index && position.character < index + captureText.length
+  const boo = position.character >= index && position.character <= index + captureText.length
   return [boo, index]
 }
+
+const shouldDecoration = (text: string) => {
+  const reg = /import(\s+|\()|require\(|url\(/
+  return reg.test(text)
+}
+
+const textDecoration = window.createTextEditorDecorationType({
+  textDecoration: 'underline',
+  cursor: 'pointer',
+  // 活动链接颜色
+  color: new ThemeColor('editorLink.activeForeground')
+})
 
 const captureReg = /['"`\(].+['"`\)]/
 const provideDefinition: DefinitionProvider['provideDefinition'] = async (document, position) => {
@@ -120,17 +142,22 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
   const existsPath = await tryExistsPath(newPath)
   if (!existsPath) return
 
+  const range = new Range(
+    position.line,
+    index - start,
+    position.line,
+    index + captureText.length + start
+  )
+
+  // 当前需要装饰下划线
+  const prefixText = lineText.slice(0, index)
+  if (prefixText === '' || !shouldDecoration(lineText.slice(0, index - 1))) {
+    editor.setDecorations(textDecoration, [range])
+  }
+
   return [
     {
-      originSelectionRange:
-        index > -1
-          ? new Range(
-              position.line,
-              index - start,
-              position.line,
-              index + captureText.length + start
-            )
-          : undefined,
+      originSelectionRange: index > -1 ? range : undefined,
       targetRange: new Range(0, 0, 0, 0),
       targetUri: Uri.file(existsPath)
     }
