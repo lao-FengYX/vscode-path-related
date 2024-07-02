@@ -1,5 +1,5 @@
 import { existsSync, readlinkSync } from 'fs'
-import { extname, sep } from 'path'
+import { extname, join } from 'path'
 import {
   DefinitionProvider,
   FileType,
@@ -44,7 +44,7 @@ export const tryExistsPath = async (filePath: string): Promise<string | undefine
   if (!extname(filePath) && existsSync(filePath) && (await isDir(filePath))) {
     const copyIgnoreFileExt = [...config.ignoreFileExt, ...config.allowSuffixExtensions]
 
-    const possibleFileArr = copyIgnoreFileExt.sort().map(ext => `${filePath}${sep}index${ext}`)
+    const possibleFileArr = copyIgnoreFileExt.sort().map(ext => join(filePath, `index${ext}`))
 
     return possibleFileArr.find(file => existsSync(file))
   }
@@ -96,7 +96,7 @@ const textDecoration = window.createTextEditorDecorationType({
   color: new ThemeColor('editorLink.activeForeground')
 })
 
-const captureReg = /['"`\(].+['"`\)]/
+const captureReg = /".+?"|'.+?'|`.+?`|\(.+?\)/
 const provideDefinition: DefinitionProvider['provideDefinition'] = async (document, position) => {
   const editor = getActiveEditor()
   if (!editor) return

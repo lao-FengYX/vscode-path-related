@@ -179,7 +179,7 @@ export const getNewPath = async (
   return result
 }
 
-export const captureReg = /\'(.*?)\'|\"(.*?)\"|`(.*?)`|\(.*?\)/
+export const captureReg = /".+?"|'.+?'|`.+?`|\(.+?\)/
 export const handlePath = async (text: string) => {
   const editor = getActiveEditor()
   if (!editor) return
