@@ -5,6 +5,7 @@
   "version": "0.0.1",
   "author": "Lao Feng",
   "publisher": "LaoFeng",
+  "icon": "./public/images/icon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/lao-FengYX/vscode-path-related"
