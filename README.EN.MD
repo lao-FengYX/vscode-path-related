@@ -1,10 +1,10 @@
 # path-related README
 
-[English](README.EN.md)
+[中文文档](README.md)
 
-这个插件的功能就是提供路径补全建议和路径跳转功能
+The function of this plugin is to provide path completion suggestions and path redirection functionality
 
-使用此插件强烈建议关闭 `vscode` 的路径自动补全功能
+It is strongly recommended to disable the automatic path completion function of `vscode` when using this plugin
 
 ```json
 { "typescript.suggest.paths": false }
@@ -21,7 +21,7 @@
 
 ## Extension Settings
 
-`pathAlias` 基于当前工作区的路径别名，例如：
+`pathAlias` Based on the path alias of the current workspace, for example:
 
 ```json
 {
@@ -31,7 +31,7 @@
 }
 ```
 
-`ignoreHiddenFiles` 忽略以点开头的文件 默认: `false`
+`ignoreHiddenFiles` Ignore files starting with dots. Default: `false`
 
 ```json
 {
@@ -39,7 +39,7 @@
 }
 ```
 
-`ignoreFileExt` 在路径补全时需要忽略的文件后缀 默认: `[".js", ".ts", ".jsx", ".tsx", ".d.ts"]`
+`ignoreFileExt` The default file suffixes that need to be ignored during path completion: `[".js", ".ts", ".jsx", ".tsx", ".d.ts"]`
 
 ```json
 {
@@ -47,7 +47,7 @@
 }
 ```
 
-`autoNextSuggest` 自动提示下一个补全项 默认: `false`
+`autoNextSuggest` Automatically prompt for the next completion item. Default: `false`
 
 ```json
 {
@@ -55,7 +55,7 @@
 }
 ```
 
-`jumpRecognition` 跳转时识别规则 默认: `"Alias Path"`
+`jumpRecognition` When jumping, the recognition rule defaults to: `"Alias Path"`
 
 ```json
 {
@@ -63,9 +63,9 @@
 }
 ```
 
-`allowSuffixExtensions` 在路径跳转时允许忽略的文件后缀
+`allowSuffixExtensions` Allow file suffixes to be ignored during path jumps
 
-- 默认会读取 `ignoreFileExt` 配置项进行后缀补全
+- By default, the `ignoreFileExt` configuration item will be read for suffix completion
 
 ```json
 {

@@ -49,7 +49,7 @@
         "path-related.ignoreHiddenFiles": {
           "type": "boolean",
           "description": "%ignoreHiddenFiles%",
-          "default": true
+          "default": false
         },
         "path-related.ignoreFileExt": {
           "type": "array",
