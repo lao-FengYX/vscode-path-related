@@ -103,14 +103,16 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint src --ext ts",
     "lint:prettier": "prettier --write src/",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "package:real": "pnpm vsce package --no-dependencies",
+    "publish:real": "pnpm vsce publish --no-dependencies"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.6",
-    "@types/node": "20.x",
+    "@types/node": "~20.14.5",
     "@types/vscode": "^1.75.0",
-    "@typescript-eslint/eslint-plugin": "^7.11.0",
-    "@typescript-eslint/parser": "^7.11.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.1",
+    "@typescript-eslint/parser": "^7.13.1",
     "@vscode/test-cli": "^0.0.9",
     "@vscode/test-electron": "^2.4.0",
     "esbuild": "^0.21.5",
