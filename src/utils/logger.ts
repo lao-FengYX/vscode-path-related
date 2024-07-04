@@ -14,7 +14,7 @@ export class Logger {
   }
 
   static info(message: string) {
-    Logger.getInstance().outputChannel?.show()
+    // Logger.getInstance().outputChannel?.show()
     Logger.getInstance().outputChannel?.appendLine(message)
   }
 
