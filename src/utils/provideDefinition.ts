@@ -27,21 +27,23 @@ export const isFile = async (filePath: string) => {
 }
 
 export const tryExistsPath = async (filePath: string): Promise<string | undefined> => {
-  // 如果当前路径为文件，则直接返回
-  if (extname(filePath) && existsSync(filePath) && (await isFile(filePath))) {
-    return filePath
-  }
+  // 路径是否存在
+  const isExist = existsSync(filePath)
+  // 文件后缀名
+  const ext = extname(filePath)
 
-  // 如果当前路径没有后缀并且不存在
-  // 尝试添加后缀名
-  if (!extname(filePath) && !existsSync(filePath)) {
+  // 如果当前路径为文件，则直接返回
+  if ((ext || isExist) && (await isFile(filePath))) {
+    return filePath
+  } else {
+    // 尝试添加后缀名
     const possibleFileArr = config.ignoreFileExt.map(ext => `${filePath}${ext}`)
     const find = possibleFileArr.find(file => existsSync(file))
     if (find) return find
   }
 
   // 如果当前路径为文件夹，则尝试添加 index 和忽略的后缀名
-  if (!extname(filePath) && existsSync(filePath) && (await isDir(filePath))) {
+  if (!ext && isExist && (await isDir(filePath))) {
     const copyIgnoreFileExt = [...config.ignoreFileExt, ...config.allowSuffixExtensions]
 
     const possibleFileArr = copyIgnoreFileExt.sort().map(ext => join(filePath, `index${ext}`))
