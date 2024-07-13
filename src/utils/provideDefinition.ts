@@ -11,7 +11,7 @@ import {
   workspace
 } from 'vscode'
 
-import { getActiveEditor } from '.'
+import { getActiveEditor, getCaptureText } from '.'
 import { getFolderPath, getNewPath } from './folder'
 import { Logger } from './logger'
 import { getPkgDependencies } from './packageJson'
@@ -98,7 +98,6 @@ const textDecoration = window.createTextEditorDecorationType({
   color: new ThemeColor('editorLink.activeForeground')
 })
 
-const captureReg = /".+?"|'.+?'|`.+?`|\(.+?\)/
 const provideDefinition: DefinitionProvider['provideDefinition'] = async (document, position) => {
   const editor = getActiveEditor()
   if (!editor) return
@@ -107,11 +106,8 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
   if (!folderPath) return
 
   const lineText = document.lineAt(position).text
-  const matchArr = lineText.match(captureReg)
-  if (!matchArr) return
 
-  const str = matchArr[0]
-  const captureText = str.replace(/[\'\"\`\(\)]/g, '')
+  const { captureOriginText: str, replaceText: captureText } = getCaptureText(lineText, position)
   if (!captureText) return
 
   const [boo, index] = textInThePath(position, lineText, captureText)

@@ -28,7 +28,7 @@ const provideCompletionItems = async (document: TextDocument, position: Position
   const fullText = document.lineAt(position).text
   if (!shouldProvide(fullText, position)) return
 
-  const fileList = await handlePath(fullText)
+  const fileList = await handlePath(fullText, position)
   if (!fileList) return
 
   const arr: CompletionItem[] = []

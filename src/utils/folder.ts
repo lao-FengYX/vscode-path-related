@@ -1,7 +1,7 @@
 import { join } from 'path'
-import { TextEditor, Uri, workspace } from 'vscode'
+import { Position, TextEditor, Uri, workspace } from 'vscode'
 
-import { getActiveEditor, Flag } from '.'
+import { getActiveEditor, Flag, getCaptureText } from '.'
 import { Logger } from './logger'
 import { config } from './register'
 import { getPkgDependencies } from './packageJson'
@@ -179,8 +179,7 @@ export const getNewPath = async (
   return result
 }
 
-export const captureReg = /".+?"|'.+?'|`.+?`|\(.+?\)/
-export const handlePath = async (text: string) => {
+export const handlePath = async (text: string, position: Position) => {
   const editor = getActiveEditor()
   if (!editor) return
 
@@ -190,11 +189,8 @@ export const handlePath = async (text: string) => {
   const filePath = getFilePath(editor)
   if (!filePath) return
 
-  const mathArr = text.match(captureReg)
-  if (!mathArr) return
-
-  const currentPath = mathArr[0].replace(/[\'\"\`\(\)]/g, '')
-  if (!currentPath.trim()) return
+  const { replaceText: currentPath } = getCaptureText(text, position)
+  if (!currentPath) return
 
   let newPath: string | undefined = await getNewPath(currentPath, folderPath, filePath)
 
