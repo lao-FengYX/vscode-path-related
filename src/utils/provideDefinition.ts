@@ -31,23 +31,22 @@ export const tryExistsPath = async (filePath: string): Promise<string | undefine
   const isExist = existsSync(filePath)
   // 文件后缀名
   const ext = extname(filePath)
+  // 尝试添加后缀名的数组
+  const copyIgnoreFileExt = [...config.ignoreFileExt, ...config.allowSuffixExtensions].sort()
 
   // 如果当前路径为文件，则直接返回
   if ((ext || isExist) && (await isFile(filePath))) {
     return filePath
   } else {
     // 尝试添加后缀名
-    const possibleFileArr = config.ignoreFileExt.map(ext => `${filePath}${ext}`)
+    const possibleFileArr = copyIgnoreFileExt.map(ext => `${filePath}${ext}`)
     const find = possibleFileArr.find(file => existsSync(file))
     if (find) return find
   }
 
   // 如果当前路径为文件夹，则尝试添加 index 和忽略的后缀名
   if (!ext && isExist && (await isDir(filePath))) {
-    const copyIgnoreFileExt = [...config.ignoreFileExt, ...config.allowSuffixExtensions]
-
-    const possibleFileArr = copyIgnoreFileExt.sort().map(ext => join(filePath, `index${ext}`))
-
+    const possibleFileArr = copyIgnoreFileExt.map(ext => join(filePath, `index${ext}`))
     return possibleFileArr.find(file => existsSync(file))
   }
 
@@ -97,6 +96,8 @@ const textDecoration = window.createTextEditorDecorationType({
   // 活动链接颜色
   color: new ThemeColor('editorLink.activeForeground')
 })
+
+let timer: NodeJS.Timeout | null = null
 
 const provideDefinition: DefinitionProvider['provideDefinition'] = async (document, position) => {
   const editor = getActiveEditor()
@@ -151,6 +152,11 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
   const prefixText = lineText.slice(0, index)
   if (prefixText === '' || !shouldDecoration(lineText.slice(0, index - 1))) {
     editor.setDecorations(textDecoration, [range])
+
+    if (timer) clearTimeout(timer)
+    timer = setTimeout(() => {
+      editor.setDecorations(textDecoration, [])
+    }, 1000)
   }
 
   return [

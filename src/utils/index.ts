@@ -52,7 +52,7 @@ const getcapturePos = (text: string, position: Position) => {
   let num = position.character - 1
   let char = ''
 
-  while (num >= 0) {
+  while (num >= 0 && char === '') {
     if (captureSymbolArr.includes(text[num]) || text[num] === '(') {
       start = num
       char = text[num]
@@ -62,7 +62,7 @@ const getcapturePos = (text: string, position: Position) => {
 
   num = position.character
 
-  while (num < text.length && char) {
+  while (num < text.length && char && end === -1) {
     if (char === text[num] || (char === '(' && text[num] === ')')) {
       end = num
     }

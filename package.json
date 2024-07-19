@@ -86,7 +86,9 @@
         "path-related.allowSuffixExtensions": {
           "type": "array",
           "description": "%allowSuffixExtensions%",
-          "default": []
+          "default": [
+            ".vue"
+          ]
         }
       }
     }
