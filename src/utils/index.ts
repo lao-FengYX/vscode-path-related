@@ -23,7 +23,7 @@ export const getConfig = <T extends keyof ConfigReturnType>(
  * 匹配 hover 位置文本
  * @param text 待匹配文本
  * @param position 位置
- * @returns 
+ * @returns
  */
 export const getCaptureText = (text: string, position: Position) => {
   let captureOriginText = ''
