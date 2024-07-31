@@ -87,7 +87,7 @@ export const textInThePath = (
 
 const shouldDecoration = (text: string) => {
   const reg = /import(\s+|\()|require\(|url\(/
-  return reg.test(text)
+  return !reg.test(text)
 }
 
 const textDecoration = window.createTextEditorDecorationType({
@@ -148,9 +148,10 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
     index + captureText.length + start
   )
 
-  // 当前需要装饰下划线
+  // 截取匹配文本最后出现的位置之前的字符
+  // 判断是否需要装饰下划线
   const prefixText = lineText.slice(0, index)
-  if (prefixText === '' || !shouldDecoration(lineText.slice(0, index - 1))) {
+  if (shouldDecoration(prefixText)) {
     editor.setDecorations(textDecoration, [range])
 
     if (timer) clearTimeout(timer)

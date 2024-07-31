@@ -19,24 +19,23 @@ export const getConfig = <T extends keyof ConfigReturnType>(
   return config.get(key)
 }
 
-const captureReg = /".+?"|'.+?'|`.+?`|\(.+?\)/g
+/**
+ * 匹配 hover 位置文本
+ * @param text 待匹配文本
+ * @param position 位置
+ * @returns 
+ */
 export const getCaptureText = (text: string, position: Position) => {
-  const mathArr = text.match(captureReg)
   let captureOriginText = ''
   let replaceText = ''
 
-  if (mathArr?.length && mathArr.length > 1) {
-    const { start, end } = getcapturePos(text, position)
-    if (start === -1 || end === -1) {
-      return { captureOriginText, replaceText }
-    }
-
-    captureOriginText = text.slice(start, end + 1)
-  } else {
-    captureOriginText = mathArr?.[0] ?? ''
+  const { start, end } = getcapturePos(text, position)
+  if (start === -1 || end === -1) {
+    return { captureOriginText, replaceText }
   }
 
-  captureReg.lastIndex = 0
+  captureOriginText = text.slice(start, end + 1)
+
   replaceText = captureOriginText.replace(/[\'\"\`\(\)]/g, '').trim()
 
   return { captureOriginText, replaceText }
