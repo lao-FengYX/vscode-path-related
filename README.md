@@ -69,7 +69,7 @@
 
 ```json
 {
-  "path-related.allowSuffixExtensions": []
+  "path-related.allowSuffixExtensions": [".vue"]
 }
 ```
 

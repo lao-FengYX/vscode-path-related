@@ -69,7 +69,7 @@ It is strongly recommended to disable the automatic path completion function of 
 
 ```json
 {
-  "path-related.allowSuffixExtensions": []
+  "path-related.allowSuffixExtensions": [".vue"]
 }
 ```
 
