@@ -1,11 +1,11 @@
-import { OutputChannel, window } from 'vscode'
+import { LogOutputChannel, window } from 'vscode'
 
 export class Logger {
   private static instance: Logger | undefined
-  private outputChannel?: OutputChannel
+  private outputChannel?: LogOutputChannel
 
   constructor() {
-    this.outputChannel = window.createOutputChannel('path-related')
+    this.outputChannel = window.createOutputChannel('path-related', { log: true })
   }
 
   private static getInstance() {
@@ -14,8 +14,8 @@ export class Logger {
   }
 
   static info(message: string) {
-    // Logger.getInstance().outputChannel?.show()
-    Logger.getInstance().outputChannel?.appendLine(message)
+    Logger.getInstance().outputChannel?.show()
+    Logger.getInstance().outputChannel?.info(message)
   }
 
   static clear() {

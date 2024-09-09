@@ -1,5 +1,5 @@
-import { join } from 'path'
-import { Position, TextEditor, Uri, workspace } from 'vscode'
+import { join, sep } from 'path'
+import { Position, TextEditor, Uri, workspace, FileType } from 'vscode'
 
 import { getActiveEditor, Flag, getCaptureText } from '.'
 import { Logger } from './logger'
@@ -205,4 +205,46 @@ export const handlePath = async (text: string, position: Position) => {
   } catch (error) {
     Logger.info(`路径未找到 path -> ${newPath}`)
   }
+}
+
+// -------------------
+// 优化项  缓存起来
+// -------------------
+export const readFolder = async (path: string) => {
+  const fileArr = await workspace.fs.readDirectory(Uri.file(path))
+  return fileArr
+}
+
+export const handleSetFile = async (path: string, fileObj: Record<string, any>) => {
+  const files = await readFolder(path)
+  while (files.length) {
+    const file = files.shift()
+    if (!file) break
+
+    const [fileName, fileType] = file
+    if (fileType === FileType.File) {
+      fileObj[fileName] = undefined
+    } else if (fileType === FileType.Directory) {
+      fileObj[fileName] = {}
+      if (fileName === 'node_modules') continue
+
+      await handleSetFile(`${path}${sep}${fileName}`, fileObj[fileName])
+    }
+  }
+}
+
+export const fileMap = new Map<string, Record<string, any>>()
+export const readAllFile = async () => {
+  let time = performance.now()
+  let workspaceFolders = workspace.workspaceFolders
+  if (!workspaceFolders) return
+
+  workspaceFolders?.forEach(async folder => {
+    let obj: Record<string, any> = {}
+    let rootPath = folder.uri.fsPath
+
+    await handleSetFile(rootPath, obj)
+    fileMap.set(rootPath, obj)
+  })
+  Logger.info(`读取文件耗时 -> ${(performance.now() - time).toFixed(3)}毫秒`)
 }
