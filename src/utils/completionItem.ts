@@ -43,8 +43,13 @@ const provideCompletionItems = async (document: TextDocument, position: Position
         kind = CompletionItemKind.File
         break
       case FileType.SymbolicLink:
+      case 66 as FileType:
+        // 微软的链接符号(FileType.SymbolicLink)是 64 但是给的是 66
+        // 不太明白为什么
         kind = CompletionItemKind.Reference
       default:
+        // unknown 视为文件
+        kind = CompletionItemKind.File
         break
     }
     if (!kind) continue

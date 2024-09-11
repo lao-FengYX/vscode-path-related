@@ -109,67 +109,67 @@ const handleRegister = (context: ExtensionContext) => {
   // 优化项  缓存起来
   // -------------------
 
-  // 监听工作区文件夹变化
-  context.subscriptions.push(
-    workspace.onDidChangeWorkspaceFolders(e => {
-      e.removed.forEach(folder => {
-        const path = folder.uri.fsPath
-        fileMap.delete(path)
-      })
+  // // 监听工作区文件夹变化
+  // context.subscriptions.push(
+  //   workspace.onDidChangeWorkspaceFolders(e => {
+  //     e.removed.forEach(folder => {
+  //       const path = folder.uri.fsPath
+  //       fileMap.delete(path)
+  //     })
 
-      e.added.forEach(folder => {
-        const path = folder.uri.fsPath
-        let obj = {}
-        handleSetFile(path, obj)
-        fileMap.set(path, obj)
-      })
-    })
-  )
+  //     e.added.forEach(folder => {
+  //       const path = folder.uri.fsPath
+  //       let obj = {}
+  //       handleSetFile(path, obj)
+  //       fileMap.set(path, obj)
+  //     })
+  //   })
+  // )
 
-  // 监听文件创建
-  context.subscriptions.push(
-    workspace.onDidCreateFiles(e => {
-      let rootPath = workspace.getWorkspaceFolder(e.files[0])?.uri.fsPath
-      if (!rootPath) return
+  // // 监听文件创建
+  // context.subscriptions.push(
+  //   workspace.onDidCreateFiles(e => {
+  //     let rootPath = workspace.getWorkspaceFolder(e.files[0])?.uri.fsPath
+  //     if (!rootPath) return
 
-      e.files.forEach(file => {
-        fileChange(file.fsPath, rootPath, 'add')
-      })
-    })
-  )
+  //     e.files.forEach(file => {
+  //       fileChange(file.fsPath, rootPath, 'add')
+  //     })
+  //   })
+  // )
 
-  // 监听文件删除
-  context.subscriptions.push(
-    workspace.onDidDeleteFiles(e => {
-      e.files.forEach(file => {
-        let rootPath = workspace.getWorkspaceFolder(file)?.uri.fsPath
-        if (!rootPath) return
+  // // 监听文件删除
+  // context.subscriptions.push(
+  //   workspace.onDidDeleteFiles(e => {
+  //     e.files.forEach(file => {
+  //       let rootPath = workspace.getWorkspaceFolder(file)?.uri.fsPath
+  //       if (!rootPath) return
 
-        const path = file.fsPath
-        fileChange(path, rootPath, 'del')
-      })
-    })
-  )
+  //       const path = file.fsPath
+  //       fileChange(path, rootPath, 'del')
+  //     })
+  //   })
+  // )
 
-  // 监听文件重命名
-  context.subscriptions.push(
-    workspace.onDidRenameFiles(e => {
-      e.files.forEach(({ newUri, oldUri }) => {
-        const time = performance.now()
+  // // 监听文件重命名
+  // context.subscriptions.push(
+  //   workspace.onDidRenameFiles(e => {
+  //     e.files.forEach(({ newUri, oldUri }) => {
+  //       const time = performance.now()
 
-        let rootPath = workspace.getWorkspaceFolder(newUri)?.uri.fsPath
-        let rootPathOld = workspace.getWorkspaceFolder(oldUri)?.uri.fsPath
-        if (!rootPath || !rootPathOld) return
+  //       let rootPath = workspace.getWorkspaceFolder(newUri)?.uri.fsPath
+  //       let rootPathOld = workspace.getWorkspaceFolder(oldUri)?.uri.fsPath
+  //       if (!rootPath || !rootPathOld) return
 
-        const oldPath = oldUri.fsPath
-        const newPath = newUri.fsPath
-        fileChange(oldPath, rootPathOld, 'del')
-        fileChange(newPath, rootPath, 'add')
+  //       const oldPath = oldUri.fsPath
+  //       const newPath = newUri.fsPath
+  //       fileChange(oldPath, rootPathOld, 'del')
+  //       fileChange(newPath, rootPath, 'add')
 
-        console.log(`文件处理耗时${(performance.now() - time).toFixed(3)}ms`)
-      })
-    })
-  )
+  //       console.log(`文件处理耗时${(performance.now() - time).toFixed(3)}ms`)
+  //     })
+  //   })
+  // )
 }
 
 export { config, handleRegister }
