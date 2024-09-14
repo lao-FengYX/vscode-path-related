@@ -89,6 +89,11 @@
           "default": [
             ".vue"
           ]
+        },
+        "path-related.depsJumpAndTip": {
+          "type": "boolean",
+          "default": false,
+          "description": "%depsJumpAndTip%"
         }
       }
     }

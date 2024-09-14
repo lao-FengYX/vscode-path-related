@@ -73,6 +73,14 @@
 }
 ```
 
+`depsJumpAndTip` 是否在路径跳转和路径提示时同时提示依赖路径 默认: `false`
+
+```json
+{
+  "path-related.depsJumpAndTip": false
+}
+```
+
 ## Change Log
 
 see CHANGELOG.md

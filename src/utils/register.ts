@@ -9,26 +9,11 @@ import {
 } from 'vscode'
 
 import { sep } from 'path'
-import { getConfig } from '.'
-import type { ConfigReturnType } from '../typing'
+
 import autoCompletion from './completionItem'
 import { fileMap, handleSetFile } from './folder'
 import jumpToFileProvider from './provideDefinition'
-
-const config: ConfigReturnType = {
-  ignoreHiddenFiles: undefined,
-  pathAlias: undefined,
-  ignoreFileExt: [],
-  autoNextSuggest: false,
-  jumpRecognition: 'Alias Path',
-  allowSuffixExtensions: []
-}
-config.ignoreHiddenFiles = getConfig('ignoreHiddenFiles')
-config.pathAlias = getConfig('pathAlias')
-config.ignoreFileExt = getConfig('ignoreFileExt') || []
-config.autoNextSuggest = getConfig('autoNextSuggest')
-config.jumpRecognition = getConfig('jumpRecognition') || 'Alias Path'
-config.allowSuffixExtensions = getConfig('allowSuffixExtensions') || []
+import { configChange } from './config'
 
 const handleAdd = (
   waitArr: string[],
@@ -86,14 +71,7 @@ const handleRegister = (context: ExtensionContext) => {
   // 配置变化
   context.subscriptions.push(
     workspace.onDidChangeConfiguration(e => {
-      if (e.affectsConfiguration('path-related')) {
-        config.ignoreHiddenFiles = getConfig('ignoreHiddenFiles')
-        config.pathAlias = getConfig('pathAlias')
-        config.ignoreFileExt = getConfig('ignoreFileExt') || []
-        config.autoNextSuggest = getConfig('autoNextSuggest')
-        config.jumpRecognition = getConfig('jumpRecognition') || 'Alias Path'
-        config.allowSuffixExtensions = getConfig('allowSuffixExtensions') || []
-      }
+      configChange(e)
     })
   )
 
@@ -172,4 +150,4 @@ const handleRegister = (context: ExtensionContext) => {
   // )
 }
 
-export { config, handleRegister }
+export { handleRegister }

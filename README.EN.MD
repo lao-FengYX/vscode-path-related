@@ -73,6 +73,14 @@ It is strongly recommended to disable the automatic path completion function of 
 }
 ```
 
+`depsJumpAndTip` Should dependency paths be prompted simultaneously during path jumps and path prompts? Default: `false`
+
+```json
+{
+  "path-related.depsJumpAndTip": false
+}
+```
+
 ## Change Log
 
 see CHANGELOG.md

@@ -7,5 +7,6 @@
   "jumpRecognition.AliasPath": "仅识别提供的别名",
   "jumpRecognition.AliasPathAndNodeModules": "识别别名和 node_modules",
   "jumpRecognition.AllPath": "识别所有路径",
-  "allowSuffixExtensions": "允许省略的后缀, (默认读取 `ignoreFileExt` 配置)"
+  "allowSuffixExtensions": "允许省略的后缀, (默认读取 `ignoreFileExt` 配置)",
+  "depsJumpAndTip": "开启依赖包(npm)跳转和路径提示"
 }

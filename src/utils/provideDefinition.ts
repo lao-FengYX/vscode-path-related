@@ -1,5 +1,5 @@
 import { existsSync, readlinkSync } from 'fs'
-import { extname, join } from 'path'
+import { join } from 'path'
 import {
   DefinitionProvider,
   FileType,
@@ -15,7 +15,7 @@ import { getActiveEditor, getCaptureText } from '.'
 import { getFolderPath, getNewPath } from './folder'
 import { Logger } from './logger'
 import { getPkgDependencies } from './packageJson'
-import { config } from './register'
+import { config } from './config'
 
 export const isDir = async (filePath: string) => {
   const fileStat = await workspace.fs.stat(Uri.file(filePath))
@@ -26,28 +26,95 @@ export const isFile = async (filePath: string) => {
   return fileStat.type === FileType.File
 }
 
+const getFirstRealValue = (obj: Record<string, any>, condition: any[]) => {
+  if (condition === null || !condition) return
+  for (const key of condition) {
+    if (obj?.[key]) return obj[key]
+  }
+}
+
+// pkg 文件的入口
+// browser 浏览器入口
+// module es模块入口
+// main cjs 和 es模块 入口
+// exports 导出路径
+// "exports": {
+//     ".": {
+//       "import": "./lib/esm/index.mjs",
+//       "require": "./command.js"
+//     },
+//     "./package.json": "./package.json"
+//  }
+const pkgEntryKeys = ['browser', 'module', 'main', 'exports']
+
+/**
+ * 处理 package.json 的入口路径
+ * @param filePath 文件路径
+ * @returns
+ */
+export const handlerDepsEntry = async (filePath: string) => {
+  // 如果没有找到，则尝试读取 package.json
+  let pkgPath = join(filePath, 'package.json')
+
+  if (!existsSync(pkgPath)) return
+
+  let json: any = (await workspace.fs.readFile(Uri.file(pkgPath))).toString() || '{}'
+  json = JSON.parse(json) as Record<string, any>
+
+  for (const key of pkgEntryKeys) {
+    const value = json?.[key]
+
+    if (value && typeof value === 'string') {
+      return join(filePath, value)
+    }
+    // 如果是 exports，则尝试获取 import 和 require 的路径
+    if (key === 'exports' && value) {
+      const entries = Object.entries(value) as [string, string | Record<string, string>][]
+
+      for (const [k, v] of entries) {
+        if (k !== '.' || !v) continue
+        if (typeof v === 'string') {
+          return join(filePath, v)
+        }
+
+        if (typeof v === 'object') {
+          const importOrRequire = getFirstRealValue(v, ['import', 'require', 'default'])
+          return join(filePath, importOrRequire)
+        }
+      }
+    }
+  }
+}
+
+/**
+ * 验证路径是否存在
+ * @param filePath 文件路径
+ * @returns
+ */
 export const tryExistsPath = async (filePath: string): Promise<string | undefined> => {
   // 路径是否存在
   const isExist = existsSync(filePath)
-  // 文件后缀名
-  const ext = extname(filePath)
   // 尝试添加后缀名的数组
   const copyIgnoreFileExt = [...config.ignoreFileExt, ...config.allowSuffixExtensions].sort()
 
+  // 如果当前路径为文件夹，则尝试添加 index 和忽略的后缀名
+  if (isExist && (await isDir(filePath))) {
+    const possibleFileArr = copyIgnoreFileExt.map(ext => join(filePath, `index${ext}`))
+    let find = possibleFileArr.find(file => existsSync(file))
+    if (find) return find
+
+    const path = await handlerDepsEntry(filePath)
+    if (path) return path
+  }
+
   // 如果当前路径为文件，则直接返回
-  if ((ext || isExist) && (await isFile(filePath))) {
+  if (isExist && (await isFile(filePath))) {
     return filePath
   } else {
     // 尝试添加后缀名
     const possibleFileArr = copyIgnoreFileExt.map(ext => `${filePath}${ext}`)
     const find = possibleFileArr.find(file => existsSync(file))
     if (find) return find
-  }
-
-  // 如果当前路径为文件夹，则尝试添加 index 和忽略的后缀名
-  if (!ext && isExist && (await isDir(filePath))) {
-    const possibleFileArr = copyIgnoreFileExt.map(ext => join(filePath, `index${ext}`))
-    return possibleFileArr.find(file => existsSync(file))
   }
 
   // 当前使用的可能是 pnpm 的路径(软连接)
@@ -85,6 +152,11 @@ export const textInThePath = (
   return [boo, index]
 }
 
+/**
+ * 判断是否需要装饰下划线
+ * @param text 需要解析的字符串
+ * @returns
+ */
 const shouldDecoration = (text: string) => {
   const reg = /import(\s+|\()|require\(|url\(/
   return !reg.test(text)
@@ -100,6 +172,7 @@ const textDecoration = window.createTextEditorDecorationType({
 let timer: NodeJS.Timeout | null = null
 
 const provideDefinition: DefinitionProvider['provideDefinition'] = async (document, position) => {
+  let time = Date.now()
   const editor = getActiveEditor()
   if (!editor) return
 
@@ -159,6 +232,8 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
       editor.setDecorations(textDecoration, [])
     }, 1000)
   }
+
+  console.log(Date.now() - time + 'ms')
 
   return [
     {

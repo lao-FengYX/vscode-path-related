@@ -15,4 +15,5 @@ export interface ConfigReturnType {
   autoNextSuggest: Boolean | undefined
   jumpRecognition: 'Alias Path' | 'Alias Path And node_modules' | 'All Path'
   allowSuffixExtensions: string[]
+  depsJumpAndTip: Boolean
 }

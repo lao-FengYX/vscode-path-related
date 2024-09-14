@@ -3,7 +3,7 @@ import { Position, TextEditor, Uri, workspace, FileType } from 'vscode'
 
 import { getActiveEditor, Flag, getCaptureText } from '.'
 import { Logger } from './logger'
-import { config } from './register'
+import { config } from './config'
 import { getPkgDependencies } from './packageJson'
 
 /**
@@ -107,6 +107,20 @@ const getPathFlag = async (
     return [Flag.relative, { currentPath, folderPath, filePath }]
   }
 
+  // 依赖包路径
+  if (config.depsJumpAndTip) {
+    const allPkgResult = (await getPkgDependencies()) || []
+    // 获取所有依赖的 key 和依赖的 pkgJson 路径
+    const [dependencies, rootPath] =
+      allPkgResult.find(([keys]) =>
+        keys.some(p => currentPath.startsWith(p) && (verify ? currentPath.endsWith('/') : true))
+      ) || []
+
+    if (dependencies && rootPath) {
+      return [Flag.npmPkg, { currentPath, folderPath, filePath, rootPath }]
+    }
+  }
+
   // 自定义路径
   const pathAlias = config.pathAlias || {}
   const processedPathAlias = Object.entries(pathAlias).map(
@@ -120,20 +134,6 @@ const getPathFlag = async (
     ) || []
   if (alias && aliasPath) {
     return [Flag.custom, { currentPath, folderPath, filePath, alias, aliasPath }]
-  }
-
-  // 依赖包路径
-  const allPkgResult = await getPkgDependencies()
-  if (allPkgResult) {
-    // 获取所有依赖的 key 和依赖的 pkgJson 路径
-    const [dependencies, rootPath] =
-      allPkgResult.find(([keys]) =>
-        keys.some(p => currentPath.startsWith(p) && (verify ? currentPath.endsWith('/') : true))
-      ) || []
-
-    if (dependencies && rootPath) {
-      return [Flag.npmPkg, { currentPath, folderPath, filePath, rootPath }]
-    }
   }
 
   return []

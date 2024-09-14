@@ -8,7 +8,7 @@ import {
 } from 'vscode'
 
 import { handlePath } from './folder'
-import { config } from './register'
+import { config } from './config'
 
 const sortText = {
   [FileType.Directory]: 1,

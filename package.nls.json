@@ -7,5 +7,6 @@
   "jumpRecognition.AliasPath": "Only recognize the provided alias",
   "jumpRecognition.AliasPathAndNodeModules": "Recognize the alias and node_modules",
   "jumpRecognition.AllPath": "Recognize all paths",
-  "allowSuffixExtensions": "Allow omitted suffixes (default reading of `ignoreFileExt` configuration)"
+  "allowSuffixExtensions": "Allow omitted suffixes (default reading of `ignoreFileExt` configuration)",
+  "depsJumpAndTip": "Enable dependencies(npm) jump and path tip"
 }
