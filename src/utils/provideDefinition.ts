@@ -172,7 +172,6 @@ const textDecoration = window.createTextEditorDecorationType({
 let timer: NodeJS.Timeout | null = null
 
 const provideDefinition: DefinitionProvider['provideDefinition'] = async (document, position) => {
-  let time = Date.now()
   const editor = getActiveEditor()
   if (!editor) return
 
@@ -232,8 +231,6 @@ const provideDefinition: DefinitionProvider['provideDefinition'] = async (docume
       editor.setDecorations(textDecoration, [])
     }, 1000)
   }
-
-  console.log(Date.now() - time + 'ms')
 
   return [
     {
