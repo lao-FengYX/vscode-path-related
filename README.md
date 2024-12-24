@@ -21,65 +21,17 @@
 
 ## Extension Settings
 
-`pathAlias` 基于当前工作区的路径别名，例如：
-
-```json
-{
-  "path-related.pathAlias": {
-    "@": "${workspaceFolder}/src"
-  }
-}
-```
-
-`ignoreHiddenFiles` 忽略以点开头的文件 默认: `false`
-
-```json
-{
-  "path-related.ignoreHiddenFiles": false
-}
-```
-
-`ignoreFileExt` 在路径补全时需要忽略的文件后缀 默认: `[".js", ".ts", ".jsx", ".tsx", ".d.ts"]`
-
-```json
-{
-  "path-related.ignoreFileExt": [".js", ".ts", ".jsx", ".tsx", ".d.ts"]
-}
-```
-
-`autoNextSuggest` 自动提示下一个补全项 默认: `false`
-
-```json
-{
-  "path-related.autoNextSuggest": false
-}
-```
-
-`jumpRecognition` 跳转时识别规则 默认: `"Alias Path"`
-
-```json
-{
-  "path-related.jumpRecognition": "Alias Path"
-}
-```
-
-`allowSuffixExtensions` 在路径跳转时允许忽略的文件后缀
-
-- 默认会读取 `ignoreFileExt` 配置项进行后缀补全
-
-```json
-{
-  "path-related.allowSuffixExtensions": [".vue"]
-}
-```
-
-`depsJumpAndTip` 是否在路径跳转和路径提示时同时提示依赖路径 默认: `false`
-
-```json
-{
-  "path-related.depsJumpAndTip": false
-}
-```
+| 配置项                | 描述                                                | 默认值                                   |
+| --------------------- | --------------------------------------------------- | ---------------------------------------- |
+| pathAlias             | 基于当前工作区的路径别名，例如：@ 映射到 src 文件夹 | {"@": "${workspaceFolder}/src"}          |
+| ignoreHiddenFiles     | 忽略以点开头的文件                                  | false                                    |
+| ignoreFileExt         | 在路径补全时需要忽略的文件后缀                      | [".js", ".ts", ".jsx", ".tsx", ".d.ts"]  |
+| autoNextSuggest       | 自动提示下一个补全项                                | false                                    |
+| jumpRecognition       | 跳转时识别规则                                      | "Alias Path"                             |
+| allowSuffixExtensions | 在路径跳转时允许忽略的文件后缀                      | ["vue"]（默认读取 ignoreFileExt 配置项） |
+| depsJumpAndTip        | 是否在路径跳转和路径提示时同时提示依赖路径          | false                                    |
+| openTreeView          | 文档打开时自动关联到对应的文件视图                  | ["node_modules"]                         |
+| enableTreeView        | 是否开启文件视图                                    | false                                    |
 
 ## Change Log
 

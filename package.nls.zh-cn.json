@@ -8,5 +8,8 @@
   "jumpRecognition.AliasPathAndNodeModules": "识别别名和 node_modules",
   "jumpRecognition.AllPath": "识别所有路径",
   "allowSuffixExtensions": "允许省略的后缀, (默认读取 `ignoreFileExt` 配置)",
-  "depsJumpAndTip": "开启依赖包(npm)跳转和路径提示"
+  "depsJumpAndTip": "开启依赖包(npm)跳转和路径提示",
+  "openTreeView": "文档打开时自动关联到对应的文件视图",
+  "enableTreeView": "启用文件视图关联",
+  "path-related.createFile": "自动创建文件和文件夹"
 }

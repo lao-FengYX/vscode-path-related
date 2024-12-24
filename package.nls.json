@@ -8,5 +8,8 @@
   "jumpRecognition.AliasPathAndNodeModules": "Recognize the alias and node_modules",
   "jumpRecognition.AllPath": "Recognize all paths",
   "allowSuffixExtensions": "Allow omitted suffixes (default reading of `ignoreFileExt` configuration)",
-  "depsJumpAndTip": "Enable dependencies(npm) jump and path tip"
+  "depsJumpAndTip": "Enable dependencies(npm) jump and path tip",
+  "openTreeView": "Auto associate with the corresponding file view when the document is opened.",
+  "enableTreeView": "Enable file view association",
+  "path-related.createFile": "Auto Create Files And Folders"
 }

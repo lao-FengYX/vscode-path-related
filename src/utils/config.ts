@@ -9,25 +9,22 @@ const config: ConfigReturnType = {
   autoNextSuggest: false,
   jumpRecognition: 'Alias Path',
   allowSuffixExtensions: [],
-  depsJumpAndTip: false
+  depsJumpAndTip: false,
+  openTreeView: [],
+  enableTreeView: false,
 }
-config.ignoreHiddenFiles = getConfig('ignoreHiddenFiles')
-config.pathAlias = getConfig('pathAlias')
-config.ignoreFileExt = getConfig('ignoreFileExt') || []
-config.autoNextSuggest = getConfig('autoNextSuggest')
-config.jumpRecognition = getConfig('jumpRecognition') || 'Alias Path'
-config.allowSuffixExtensions = getConfig('allowSuffixExtensions') || []
-config.depsJumpAndTip = getConfig('depsJumpAndTip') || false
+
+const initConfig = () => {
+  for (const key in config) {
+    // @ts-ignore
+    config[key] = getConfig(key) || config[key]
+  }
+}
+initConfig()
 
 const configChange = (e: ConfigurationChangeEvent) => {
   if (e.affectsConfiguration('path-related')) {
-    config.ignoreHiddenFiles = getConfig('ignoreHiddenFiles')
-    config.pathAlias = getConfig('pathAlias')
-    config.ignoreFileExt = getConfig('ignoreFileExt') || []
-    config.autoNextSuggest = getConfig('autoNextSuggest')
-    config.jumpRecognition = getConfig('jumpRecognition') || 'Alias Path'
-    config.allowSuffixExtensions = getConfig('allowSuffixExtensions') || []
-    config.depsJumpAndTip = getConfig('depsJumpAndTip') || false
+    initConfig()
   }
 }
 

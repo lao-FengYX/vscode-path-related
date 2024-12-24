@@ -1,4 +1,9 @@
 # Change Log
+### 0.0.9
+- [add] 新增创建文件指令
+- [add] 新增配置项`openTreeView`及`enableTreeView`选择是否开启文件树视图关联
+- [fix] md文档配置项调整
+
 ### 0.0.8
 注释无用代码
 

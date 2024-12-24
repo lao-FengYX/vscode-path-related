@@ -21,65 +21,17 @@ It is strongly recommended to disable the automatic path completion function of 
 
 ## Extension Settings
 
-`pathAlias` Based on the path alias of the current workspace, for example:
-
-```json
-{
-  "path-related.pathAlias": {
-    "@": "${workspaceFolder}/src"
-  }
-}
-```
-
-`ignoreHiddenFiles` Ignore files starting with dots. Default: `false`
-
-```json
-{
-  "path-related.ignoreHiddenFiles": false
-}
-```
-
-`ignoreFileExt` The default file suffixes that need to be ignored during path completion: `[".js", ".ts", ".jsx", ".tsx", ".d.ts"]`
-
-```json
-{
-  "path-related.ignoreFileExt": [".js", ".ts", ".jsx", ".tsx", ".d.ts"]
-}
-```
-
-`autoNextSuggest` Automatically prompt for the next completion item. Default: `false`
-
-```json
-{
-  "path-related.autoNextSuggest": false
-}
-```
-
-`jumpRecognition` When jumping, the recognition rule defaults to: `"Alias Path"`
-
-```json
-{
-  "path-related.jumpRecognition": "Alias Path"
-}
-```
-
-`allowSuffixExtensions` Allow file suffixes to be ignored during path jumps
-
-- By default, the `ignoreFileExt` configuration item will be read for suffix completion
-
-```json
-{
-  "path-related.allowSuffixExtensions": [".vue"]
-}
-```
-
-`depsJumpAndTip` Should dependency paths be prompted simultaneously during path jumps and path prompts? Default: `false`
-
-```json
-{
-  "path-related.depsJumpAndTip": false
-}
-```
+| Configuration Item    | Description                                                                             | Default Value                                                      |
+| --------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| pathAlias             | Based on the path alias of the current workspace, for example: `@` maps to `src` folder | `{"@": "${workspaceFolder}/src"}`                                  |
+| ignoreHiddenFiles     | Ignore files starting with dots                                                         | `false`                                                            |
+| ignoreFileExt         | The default file suffixes that need to be ignored during path completion                | `[".js", ".ts", ".jsx", ".tsx", ".d.ts"]`                          |
+| autoNextSuggest       | Automatically prompt for the next completion item                                       | `false`                                                            |
+| jumpRecognition       | When jumping, the recognition rule defaults to: `"Alias Path"`                          | `"Alias Path"`                                                     |
+| allowSuffixExtensions | Allow file suffixes to be ignored during path jumps                                     | `["vue"]` (defaults to reading `ignoreFileExt` configuration item) |
+| depsJumpAndTip        | Should dependency paths be prompted simultaneously during path jumps and path prompts?  | `false`                                                            |
+| openTreeView          | Automatically associate the document with the corresponding file view when opened       | `["node_modules"]`                                                 |
+| enableTreeView        | Whether to enable the file view                                                         | `false`                                                            |
 
 ## Change Log
 

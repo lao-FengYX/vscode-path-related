@@ -36,7 +36,13 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "commands": [],
+    "commands": [
+      {
+        "command": "path-related.createFile",
+        "title": "%path-related.createFile%",
+        "category": "Path Related"
+      }
+    ],
     "configuration": {
       "title": "path-related",
       "properties": {
@@ -94,6 +100,18 @@
           "type": "boolean",
           "default": false,
           "description": "%depsJumpAndTip%"
+        },
+        "path-related.openTreeView": {
+          "type": "array",
+          "default": [
+            "node_modules"
+          ],
+          "description": "%openTreeView%"
+        },
+        "path-related.enableTreeView": {
+          "type": "boolean",
+          "default": false,
+          "description": "%enableTreeView%"
         }
       }
     }
