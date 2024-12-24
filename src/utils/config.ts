@@ -11,7 +11,7 @@ const config: ConfigReturnType = {
   allowSuffixExtensions: [],
   depsJumpAndTip: false,
   openTreeView: [],
-  enableTreeView: false,
+  enableTreeView: false
 }
 
 const initConfig = () => {
