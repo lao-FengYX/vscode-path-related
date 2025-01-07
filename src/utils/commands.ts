@@ -1,4 +1,4 @@
-import { join, sep } from 'path'
+import { join, sep, dirname } from 'path'
 import { FileType, TextEditor, Uri, window, workspace } from 'vscode'
 
 import { getActiveEditor } from '.'
@@ -108,12 +108,26 @@ export const createFileCommand = async () => {
     return
   }
 
-  const newPath = await getNewPath(
-    filePath,
-    workspaceFolder,
-    editor ? editor.document.uri.fsPath : workspaceFolder,
-    false
-  )
+  let newPath: string | undefined = undefined
+  // 如果输入的路径不是 相对路径或者绝对路径开头
+  if (/^[^\./\\]/.test(filePath)) {
+    if (editor) {
+      // 如果有打开的文件，以打开的文件为基准 计算路径
+      newPath = join(dirname(editor.document.uri.fsPath), filePath)
+    } else {
+      // 如果没有打开的文件，以工作区文件夹为基准 计算路径
+      newPath = join(workspaceFolder, filePath)
+    }
+  } else {
+    // 此处不再会匹配到 node_modules 目录的路径
+    newPath = await getNewPath(
+      filePath,
+      workspaceFolder,
+      editor ? editor.document.uri.fsPath : workspaceFolder,
+      false
+    )
+  }
+
   if (!newPath) {
     window.showErrorMessage('Invalid file path')
     return
