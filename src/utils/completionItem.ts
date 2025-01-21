@@ -33,7 +33,7 @@ const provideCompletionItems = async (document: TextDocument, position: Position
 
   const arr: CompletionItem[] = []
 
-  for (const [name, type] of fileList) {
+  for (const [name, type, filePath] of fileList) {
     let kind: CompletionItemKind | undefined
     switch (type) {
       case FileType.Directory:
@@ -56,8 +56,11 @@ const provideCompletionItems = async (document: TextDocument, position: Position
 
     const snippet = new CompletionItem(name, kind)
     snippet.insertText = name
+    snippet.detail = filePath
 
     if (type === FileType.File) {
+      snippet.sortText = 'f'
+
       const copyIgnoreFileExt = [...config.ignoreFileExt]
 
       // 如果在忽略的文件后缀中, 截取文件名
@@ -68,6 +71,8 @@ const provideCompletionItems = async (document: TextDocument, position: Position
         }
       })
     } else if (type === FileType.Directory) {
+      snippet.sortText = 'd'
+
       if (config.autoNextSuggest) {
         // 查看 path-autocomplete 插件的代码，发现的
         // 模拟用户键入 /
@@ -86,7 +91,6 @@ const provideCompletionItems = async (document: TextDocument, position: Position
       }
     }
 
-    snippet.sortText = `a_${sortText[type]}_${name}`
     arr.push(snippet)
   }
 

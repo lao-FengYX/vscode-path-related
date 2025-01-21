@@ -3,6 +3,7 @@ import { FileType, TextEditor, Uri, window, workspace } from 'vscode'
 
 import { getActiveEditor } from '.'
 import { getNewPath, getFolderPath } from './folder'
+import { config } from './config'
 
 /**
  * 创建Uri对象
@@ -85,7 +86,7 @@ const pathExistsHandler = async (uri: Uri, arr: string[]) => {
  */
 export const createFileCommand = async () => {
   const filePath = await window.showInputBox({
-    title: 'Enter file name split by "/"'
+    title: `Enter file name split by "/"`
   })
   if (!filePath) return
 
@@ -110,7 +111,11 @@ export const createFileCommand = async () => {
 
   let newPath: string | undefined = undefined
   // 如果输入的路径不是 相对路径或者绝对路径开头
-  if (/^[^\./\\]/.test(filePath)) {
+  // 并且不是别名路径开始
+  if (
+    /^[^\./\\]/.test(filePath) &&
+    Object.keys(config.pathAlias || {}).every(key => !filePath.startsWith(`${key}/`))
+  ) {
     if (editor) {
       // 如果有打开的文件，以打开的文件为基准 计算路径
       newPath = join(dirname(editor.document.uri.fsPath), filePath)

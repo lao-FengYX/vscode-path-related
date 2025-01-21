@@ -179,7 +179,10 @@ export const getNewPath = async (
   return result
 }
 
-export const handlePath = async (text: string, position: Position) => {
+export const handlePath = async (
+  text: string,
+  position: Position
+): Promise<[string, FileType, string][] | undefined> => {
   const editor = getActiveEditor()
   if (!editor) return
 
@@ -199,9 +202,11 @@ export const handlePath = async (text: string, position: Position) => {
   try {
     const fileArr = await workspace.fs.readDirectory(Uri.file(newPath))
     if (config.ignoreHiddenFiles) {
-      return fileArr.filter(([name]) => !name.startsWith('.'))
+      return fileArr
+        .filter(([name]) => !name.startsWith('.'))
+        .map(item => [...item, join(newPath, item[0])])
     }
-    return fileArr
+    return fileArr.map(item => [...item, join(newPath, item[0])])
   } catch (error) {
     Logger.info(`路径未找到 path -> ${newPath}`)
   }
